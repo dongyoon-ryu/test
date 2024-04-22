@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+
+    <Resource name="${tomcat.jnid.name}" auth="Container" type="javax.sql.DataSource"
+              username="${tomcat.dbpool.userid}"
+              password="${tomcat.dbpool.passwd}"
+              url="${tomcat.dbpool.url}"
+              driverClassName="${tomcat.dbpool.driverClassName}"
+              maxTotal="${tomcat.dbpool.maxTotal}"
+              maxIdle="${tomcat.dbpool.maxIdle}"
+              minIdle="${tomcat.dbpool.minIdle}"
+              initialSize="${tomcat.dbpool.initSize}"
+              maxWaitMillis="5000"
+              validationQuery="${tomcat.dbpool.validationQuery}"
+              validationQueryTimeout="5000"
+              testWhileIdle="true"
+              testOnBorrow="true"
+              timeBetweenEvictionRunsMillis="60000" />
+  </GlobalNamingResources>
+
+  <Service name="Catalina">
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443"
+               URIEncoding="${tomcat.connector.URIEncoding}"
+               minSpareThreads="${tomcat.connector.minSpareThreads}"
+               maxThreads="${tomcat.connector.maxThreads}"
+               maxPostSize="${tomcat.connector.maxPostSize}"
+               useBodyEncodingForURI="true"
+               bindOnInit="false"
+               server="Server" />
+
+    <Engine name="Catalina" defaultHost="localhost">
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+      </Realm>
+
+      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="false">
+	 <Valve className="org.apache.catalina.valves.AccessLogValve" directory="${tomcat.log.dir}"
+               prefix="localhost_access" suffix=".log"
+               pattern="%a %l %u %t %s_code %b_bytes %D_usecs &quot;%r&quot; &quot;%{Referer}i&quot; &quot;%{User-Agent}i&quot;" />
+	 <Context docBase="/usr/local/tomcat/ROOT" path="" reloadable="false">
+	     <ResourceLink global="${tomcat.jnid.name}" name="${tomcat.jnid.name}" type="javax.sql.DataSource" />
+	 </Context>
+
+      </Host>
+    </Engine>
+  </Service>
+</Server>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>WEB-INF/tomcat-web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+    <!-- Custom Setting _ Stuck Thread Timeout ( 600 sec ) -->
+    <!--
+    <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve" threshold="600" />
+    -->
+
+    <!-- Custom Setting _ Tomcat Error Page Hide Server Info -->
+    <!--
+    <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false" />
+    -->
+    <Resource name="${tomcat.jndi.name}" auth="Container" type="javax.sql.DataSource"
+              username="${tomcat.dbpool.userid}"
+              password="${tomcat.dbpool.passwd}"
+              url="${tomcat.dbpool.url}"
+              driverClassName="${tomcat.dbpool.driverClassName}"
+              maxTotal="${tomcat.dbpool.maxTotal}"
+              maxIdle="${tomcat.dbpool.maxIdle}"
+              minIdle="${tomcat.dbpool.minIdle}"
+              initialSize="${tomcat.dbpool.initSize}"
+              maxWaitMillis="5000"
+              validationQuery="${tomcat.dbpool.validationQuery}"
+              validationQueryTimeout="5000"
+              testWhileIdle="true"
+              testOnBorrow="true"
+              timeBetweenEvictionRunsMillis="60000"
+    />
+</Context>
